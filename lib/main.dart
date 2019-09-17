@@ -44,6 +44,15 @@ class MyHomePage extends StatelessWidget {
                 elevation: 5,
               ),
             ),
+            Card(
+              elevation: 4,
+              child: Column(
+                children: <Widget>[
+                  TextField() ,
+                  TextField(),
+                ],
+              ),
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: tData.map((tx) {
@@ -74,7 +83,8 @@ class MyHomePage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          DateFormat('yyyy/MMdd HH:ss').format(tx.datetime),
+                          // DateFormat('yyyy/MMdd HH:ss').format(tx.datetime),
+                          DateFormat.yMMMd().format(tx.datetime),
                           style: TextStyle(color: Colors.grey, fontSize: 16),
                         ),
                       ],
