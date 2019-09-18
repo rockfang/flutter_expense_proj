@@ -20,26 +20,28 @@ class MyHomePage extends StatelessWidget {
         appBar: AppBar(
           title: Text("标题"),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              height: 100,
-              child: Card(
-                child: Center(
-                  child: Text(
-                    "卡片中text文本",
-                    style: TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                height: 100,
+                child: Card(
+                  child: Center(
+                    child: Text(
+                      "卡片中text文本",
+                      style: TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
+                  color: Colors.blueAccent,
+                  elevation: 5,
                 ),
-                color: Colors.blueAccent,
-                elevation: 5,
               ),
-            ),
-            UserTransaction(),
-          ],
+              UserTransaction(),
+            ],
+          ),
         ));
   }
 }
