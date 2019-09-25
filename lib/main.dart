@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
+import './widgets/chart.dart';
 import './models/transaction.dart';
 
 void main() => runApp(MyApp());
@@ -44,10 +45,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Transaction> _tData = [
-    // Transaction(
-    //     id: "1", title: "breakfirst", amount: 15, datetime: DateTime.now()),
-    // Transaction(id: "2", title: "lunch", amount: 25, datetime: DateTime.now()),
-    // Transaction(id: "3", title: "dinner", amount: 35, datetime: DateTime.now()),
+    Transaction(
+        id: "1", title: "breakfirst", amount: 15, datetime: DateTime.now()),
+    Transaction(id: "2", title: "lunch", amount: 25, datetime: DateTime.now()),
+    Transaction(id: "3", title: "dinner", amount: 35, datetime: DateTime.now()),
   ];
   void _addTransaction(String title, double amount) {
     Transaction _newOne = Transaction(
@@ -72,6 +73,11 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         });
   }
+  List<Transaction> get _recentTransactions {
+    return _tData.where((t){
+      return t.datetime.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,21 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              height: 100,
-              child: Card(
-                child: Center(
-                  child: Text(
-                    "卡片中text文本",
-                    style: TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                color: Theme.of(context).primaryColor,
-                elevation: 5,
-              ),
-            ),
+            Chart(_recentTransactions),
             TransactionList(_tData),
           ],
         ),
