@@ -9,23 +9,19 @@ class Chart extends StatelessWidget {
 
   List<Map<String, Object>> get _recentTransactionData {
     return List.generate(7, (index) {
-      print('---index:$index');
       final weekDay = DateTime.now().subtract(Duration(days: index));
-      print('---weekDay:$weekDay');
 
-      double daySum = 0;
-      if (index < _srcTransactionData.length) {
-        if (weekDay.year == _srcTransactionData[index].datetime.year &&
-            weekDay.month == _srcTransactionData[index].datetime.month &&
-            weekDay.day == _srcTransactionData[index].datetime.day) {
-          daySum += _srcTransactionData[index].amount;
+      double daySum = 0.0;
+
+      for (int i = 0, length = _srcTransactionData.length; i < length; i++) {
+        if (weekDay.year == _srcTransactionData[i].datetime.year &&
+            weekDay.month == _srcTransactionData[i].datetime.month &&
+            weekDay.day == _srcTransactionData[i].datetime.day) {
+          daySum += _srcTransactionData[i].amount;
         }
       }
 
-      print('---weekDay:$weekDay');
-      print(DateFormat.E().format(weekDay));
-      print(daySum);
-      return {'day': DateFormat.E().format(weekDay), 'amount': daySum};
+      return {'day': DateFormat.E().format(weekDay).substring(0,1), 'amount': daySum};
     });
   }
 
@@ -40,13 +36,20 @@ class Chart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.all(20),
-      elevation: 5,
+      elevation: 6,
       // child: Text(_recentTransactionData.toString()),
-      child: Row(
-          children: _recentTransactionData.map((t) {
-        return ChartBar(
-            t['day'], t['amount'], (t['amount'] as double) / _totalAmount);
-      }).toList()),
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: _recentTransactionData.map((t) {
+              return Flexible(
+                fit: FlexFit.loose,
+                child: ChartBar(t['day'], t['amount'],
+                    (t['amount'] as double) / _totalAmount),
+              );
+            }).toList()),
+      ),
     );
   }
 }
