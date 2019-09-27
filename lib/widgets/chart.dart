@@ -21,8 +21,8 @@ class Chart extends StatelessWidget {
         }
       }
 
-      return {'day': DateFormat.E().format(weekDay).substring(0,1), 'amount': daySum};
-    });
+      return {'day': DateFormat.E().format(weekDay), 'amount': daySum};
+    }).reversed.toList();
   }
 
   ///求和的另一种写法
@@ -46,7 +46,7 @@ class Chart extends StatelessWidget {
               return Flexible(
                 fit: FlexFit.loose,
                 child: ChartBar(t['day'], t['amount'],
-                    (t['amount'] as double) / _totalAmount),
+                    _totalAmount == 0 ? 0 : (t['amount'] as double) / _totalAmount),
               );
             }).toList()),
       ),

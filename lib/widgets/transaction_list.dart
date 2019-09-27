@@ -3,13 +3,20 @@ import '../models/transaction.dart';
 import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
-  List<Transaction> _tData;
-  TransactionList(this._tData);
+  final List<Transaction> _tData;
+  final Function _deleteTransaction;
+  TransactionList(this._tData, this._deleteTransaction);
+
+  List<Transaction> get _orderedTData {
+    _tData.sort((a, b) => a.datetime.compareTo(b.datetime));
+    return _tData.reversed.toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
-      child: _tData.length == 0
+      height: 350,
+      child: _orderedTData.length == 0
           ? Column(
               children: <Widget>[
                 Text("you have no transaction now ~"),
@@ -25,39 +32,29 @@ class TransactionList extends StatelessWidget {
               ],
             )
           : ListView.builder(
-              itemCount: _tData.length,
+              itemCount: _orderedTData.length,
               itemBuilder: (BuildContext context, int index) {
-                return Row(
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.purple, width: 2),
-                      ),
-                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      padding: EdgeInsets.all(5),
-                      child: Text(
-                        '￥ ${_tData[index].amount.toStringAsFixed(2)}',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColorDark),
+                return Card(
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child:
+                            FittedBox(child: Text("￥${_orderedTData[index].amount}")),
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          _tData[index].title,
-                          style: Theme.of(context).textTheme.title,
-                        ),
-                        Text(
-                          // DateFormat('yyyy/MMdd HH:ss').format(tx.datetime),
-                          DateFormat.yMMMd().format(_tData[index].datetime),
-                          style: TextStyle(color: Colors.grey, fontSize: 16),
-                        ),
-                      ],
-                    )
-                  ],
+                    title: Text(_orderedTData[index].title),
+                    subtitle:
+                        Text(DateFormat.yMd().format(_orderedTData[index].datetime)),
+                    trailing: IconButton(
+                      color: Theme.of(context).errorColor,
+                      icon: Icon(Icons.delete),
+                      onPressed: () => _deleteTransaction(_orderedTData[index].id),
+                    ),
+                  ),
                 );
               },
             ),
