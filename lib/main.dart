@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.purple, //这个是设置通用主题,默认的颜色都会走通用主题。
           accentColor: Colors.amber, // 强调色。默认FloatingActionButton就会读取这个颜色
           fontFamily: "OpenSans", //指定yaml配置的fontfamily
-          errorColor: Colors.lightBlue,//指定errorColor的颜色，在表达error的地方可以全局的它
+          errorColor: Colors.lightBlue, //指定errorColor的颜色，在表达error的地方可以全局的它
           //单独指定appbar的主题
           appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
@@ -63,21 +63,21 @@ class _MyHomePageState extends State<MyHomePage> {
         title: "lunch",
         amount: 25,
         datetime: DateTime.now().subtract(Duration(days: 6))),
-    Transaction(
-        id: "3",
-        title: "dinner",
-        amount: 35,
-        datetime: DateTime.now().subtract(Duration(days: 5))),
-    Transaction(
-        id: "4",
-        title: "dinner",
-        amount: 35,
-        datetime: DateTime.now().subtract(Duration(days: 4))),
-    Transaction(
-        id: "5",
-        title: "dinner",
-        amount: 35,
-        datetime: DateTime.now().subtract(Duration(days: 2))),
+    // Transaction(
+    //     id: "3",
+    //     title: "dinner",
+    //     amount: 35,
+    //     datetime: DateTime.now().subtract(Duration(days: 5))),
+    // Transaction(
+    //     id: "4",
+    //     title: "dinner",
+    //     amount: 35,
+    //     datetime: DateTime.now().subtract(Duration(days: 4))),
+    // Transaction(
+    //     id: "5",
+    //     title: "dinner",
+    //     amount: 35,
+    //     datetime: DateTime.now().subtract(Duration(days: 2))),
     Transaction(
         id: "6",
         title: "dinner",
@@ -122,25 +122,36 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final AppBar appBar = AppBar(
+      title: Text("My Expense"),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          onPressed: () => _showAddTransaction(context),
+        )
+      ],
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text("My Expense"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            onPressed: () => _showAddTransaction(context),
-          )
-        ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_tData, _deleteTransaction),
+            Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.3,
+                child: Chart(_recentTransactions)),
+            Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height - 
+                        MediaQuery.of(context).padding.top) *
+                    0.7,
+                child: TransactionList(_tData, _deleteTransaction)),
           ],
         ),
       ),
