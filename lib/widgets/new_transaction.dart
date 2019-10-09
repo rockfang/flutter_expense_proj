@@ -34,7 +34,9 @@ class _NewTransactionState extends State<NewTransaction> {
   void submitData() {
     String _title = _titleInputController.text;
     double _amount = double.parse(_accountInputController.text);
-    if (_titleInputController.text.isEmpty || _amount <= 0 || _pickedDate == null) {
+    if (_titleInputController.text.isEmpty ||
+        _amount <= 0 ||
+        _pickedDate == null) {
       return;
     }
     widget._addHandler(_title, _amount, _pickedDate);
@@ -43,53 +45,62 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          TextField(
-            decoration: InputDecoration(labelText: '请输入消费项名称'),
-            controller: _titleInputController,
-            keyboardType: TextInputType.text,
-            onSubmitted: (_) => submitData(),
-          ),
-          TextField(
-            decoration: InputDecoration(labelText: '请输入消费金额'),
-            controller: _accountInputController,
-            keyboardType: TextInputType.number,
-            onSubmitted: (_) => submitData(),
-          ),
-          Container(
-            height: 60,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(_pickedDate == null
-                      ? "还没有选择日期哦"
-                      : "消费日期:${DateFormat.yMd().format(_pickedDate)}"),
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 4,
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 10,
+              left: 10,
+              right: 10,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(labelText: '请输入消费项名称'),
+                controller: _titleInputController,
+                keyboardType: TextInputType.text,
+                onSubmitted: (_) => submitData(),
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: '请输入消费金额'),
+                controller: _accountInputController,
+                keyboardType: TextInputType.number,
+                onSubmitted: (_) => submitData(),
+              ),
+              Container(
+                height: 60,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(_pickedDate == null
+                          ? "还没有选择日期哦"
+                          : "消费日期:${DateFormat.yMd().format(_pickedDate)}"),
+                    ),
+                    FlatButton(
+                      child: Text(
+                        "选择日期",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor),
+                      ),
+                      onPressed: _showDatePicker,
+                    ),
+                  ],
                 ),
-                FlatButton(
-                  child: Text(
-                    "选择日期",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor),
-                  ),
-                  onPressed: _showDatePicker,
+              ),
+              RaisedButton(
+                color: Theme.of(context).primaryColor,
+                textColor: Theme.of(context).appBarTheme.textTheme.button.color,
+                child: Text(
+                  "提交",
                 ),
-              ],
-            ),
+                onPressed: submitData,
+              )
+            ],
           ),
-          RaisedButton(
-            color: Theme.of(context).primaryColor,
-            textColor: Theme.of(context).appBarTheme.textTheme.button.color,
-            child: Text(
-              "提交",
-            ),
-            onPressed: submitData,
-          )
-        ],
+        ),
       ),
     );
   }

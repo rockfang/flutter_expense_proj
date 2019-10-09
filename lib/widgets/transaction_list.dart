@@ -15,19 +15,24 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _orderedTData.length == 0
-        ? Column(
-            children: <Widget>[
-              Text("you have no transaction now ~"),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                  height: 300,
-                  child: Image.asset(
-                    "asssets/images/waiting.png",
-                    fit: BoxFit.cover,
-                  ))
-            ],
+        ? LayoutBuilder(
+            builder: (ctx, contraints) {
+              return Column(
+                children: <Widget>[
+                  Text("you have no transaction now ~"),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: contraints.maxHeight * 0.7,
+                    child: Image.asset(
+                      "asssets/images/waiting.png",
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                ],
+              );
+            },
           )
         : ListView.builder(
             itemCount: _orderedTData.length,
@@ -47,12 +52,19 @@ class TransactionList extends StatelessWidget {
                   title: Text(_orderedTData[index].title),
                   subtitle: Text(
                       DateFormat.yMd().format(_orderedTData[index].datetime)),
-                  trailing: IconButton(
-                    color: Theme.of(context).errorColor,
-                    icon: Icon(Icons.delete),
-                    onPressed: () =>
-                        _deleteTransaction(_orderedTData[index].id),
-                  ),
+                  trailing: MediaQuery.of(context).size.width > 420
+                      ? FlatButton.icon(
+                          icon: Icon(Icons.delete,color: Theme.of(context).errorColor,),
+                          label: Text('删除'),
+                          onPressed: () => _deleteTransaction(_orderedTData[index].id),
+                          textColor: Theme.of(context).errorColor,
+                        )
+                      : IconButton(
+                          color: Theme.of(context).errorColor,
+                          icon: Icon(Icons.delete),
+                          onPressed: () =>
+                              _deleteTransaction(_orderedTData[index].id),
+                        ),
                 ),
               );
             },

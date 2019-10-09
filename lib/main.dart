@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './widgets/transaction_list.dart';
@@ -7,10 +8,10 @@ import './models/transaction.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitDown,
-    DeviceOrientation.portraitUp,
-  ]);
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitDown,
+  //   DeviceOrientation.portraitUp,
+  // ]);
   runApp(MyApp());
 }
 
@@ -70,21 +71,21 @@ class _MyHomePageState extends State<MyHomePage> {
         title: "lunch",
         amount: 25,
         datetime: DateTime.now().subtract(Duration(days: 6))),
-    // Transaction(
-    //     id: "3",
-    //     title: "dinner",
-    //     amount: 35,
-    //     datetime: DateTime.now().subtract(Duration(days: 5))),
-    // Transaction(
-    //     id: "4",
-    //     title: "dinner",
-    //     amount: 35,
-    //     datetime: DateTime.now().subtract(Duration(days: 4))),
-    // Transaction(
-    //     id: "5",
-    //     title: "dinner",
-    //     amount: 35,
-    //     datetime: DateTime.now().subtract(Duration(days: 2))),
+    Transaction(
+        id: "3",
+        title: "dinner",
+        amount: 35,
+        datetime: DateTime.now().subtract(Duration(days: 5))),
+    Transaction(
+        id: "4",
+        title: "dinner",
+        amount: 35,
+        datetime: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(
+        id: "5",
+        title: "dinner",
+        amount: 35,
+        datetime: DateTime.now().subtract(Duration(days: 2))),
     Transaction(
         id: "6",
         title: "dinner",
@@ -127,8 +128,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
+  bool _landShowCharts = false;
   @override
   Widget build(BuildContext context) {
+    final _mediaQuery = MediaQuery.of(context);
+    final _isLandscape = _mediaQuery.orientation == Orientation.landscape;
+
     final AppBar appBar = AppBar(
       title: Text("My Expense"),
       actions: <Widget>[
@@ -147,22 +152,50 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Container(
-                height: (MediaQuery.of(context).size.height -
-                        appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
-                    0.3,
-                child: Chart(_recentTransactions)),
-            Container(
-                height: (MediaQuery.of(context).size.height -
-                        appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
-                    0.7,
-                child: TransactionList(_tData, _deleteTransaction)),
+            if (_isLandscape)
+Switch.adaptive(
+  activeColor: Theme.of(context).accentColor,
+  value: _landShowCharts,
+  onChanged: (value) {
+    setState(() {
+      _landShowCharts = value;
+    });
+  },
+),
+            if (_isLandscape)
+              _landShowCharts
+                  ? Container(
+                      height: (_mediaQuery.size.height -
+                              appBar.preferredSize.height -
+                              _mediaQuery.padding.top) *
+                          0.7,
+                      child: Chart(_recentTransactions))
+                  : Container(
+                      height: (_mediaQuery.size.height -
+                              appBar.preferredSize.height -
+                              _mediaQuery.padding.top) *
+                          0.7,
+                      width: double.infinity,
+                      child: TransactionList(_tData, _deleteTransaction)),
+            if (!_isLandscape)
+              Container(
+                  height: (_mediaQuery.size.height -
+                          appBar.preferredSize.height -
+                          _mediaQuery.padding.top) *
+                      0.3,
+                  child: Chart(_recentTransactions)),
+            if (!_isLandscape)
+              Container(
+                  height: (_mediaQuery.size.height -
+                          appBar.preferredSize.height -
+                          _mediaQuery.padding.top) *
+                      0.7,
+                  width: double.infinity,
+                  child: TransactionList(_tData, _deleteTransaction)),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: Platform.isIOS ? Container() : FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => _showAddTransaction(context),
       ),
