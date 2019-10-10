@@ -25,7 +25,9 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-      ],///
+      ],
+
+      ///
       supportedLocales: [
         const Locale('zh', 'CH'),
         const Locale('en', 'US'),
@@ -67,31 +69,6 @@ class _MyHomePageState extends State<MyHomePage> {
         title: "breakfirst",
         amount: 15,
         datetime: DateTime.now().subtract(Duration(days: 7))),
-    // Transaction(
-    //     id: "2",
-    //     title: "lunch",
-    //     amount: 25,
-    //     datetime: DateTime.now().subtract(Duration(days: 6))),
-    // Transaction(
-    //     id: "3",
-    //     title: "dinner",
-    //     amount: 35,
-    //     datetime: DateTime.now().subtract(Duration(days: 5))),
-    // Transaction(
-    //     id: "4",
-    //     title: "dinner",
-    //     amount: 35,
-    //     datetime: DateTime.now().subtract(Duration(days: 4))),
-    // Transaction(
-    //     id: "5",
-    //     title: "dinner",
-    //     amount: 35,
-    //     datetime: DateTime.now().subtract(Duration(days: 2))),
-    // Transaction(
-    //     id: "6",
-    //     title: "dinner",
-    //     amount: 35,
-    //     datetime: DateTime.now().subtract(Duration(days: 3))),
   ];
   void _addTransaction(String title, double amount, DateTime datetime) {
     Transaction _newOne = Transaction(
@@ -99,9 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: title,
         id: DateTime.now().toString(),
         datetime: datetime);
-setState(() {
-  _tData.add(_newOne);
-});
+    setState(() {
+      _tData.add(_newOne);
+    });
   }
 
   void _deleteTransaction(String id) {
@@ -130,6 +107,54 @@ setState(() {
   }
 
   bool _landShowCharts = false;
+
+  List<Widget> genLandscapePageBody(MediaQueryData mediaQuery, AppBar appBar) {
+    final double _chartHeight = (mediaQuery.size.height -
+            appBar.preferredSize.height -
+            mediaQuery.padding.top) *
+        0.7;
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            '展示表格',
+            style: Theme.of(context).textTheme.title,
+          ),
+          Switch.adaptive(
+            activeColor: Theme.of(context).accentColor,
+            value: _landShowCharts,
+            onChanged: (value) {
+              setState(() {
+                _landShowCharts = value;
+              });
+            },
+          ),
+        ],
+      ),
+      _landShowCharts
+          ? Container(height: _chartHeight, child: Chart(_recentTransactions))
+          : Container(
+              height: _chartHeight,
+              width: double.infinity,
+              child: TransactionList(_tData, _deleteTransaction)),
+    ];
+  }
+
+  List<Widget> genPortraitPageBody(MediaQueryData mediaQuery, AppBar appBar) {
+    final double _grantedHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top;
+    return [
+      Container(
+          height: _grantedHeight * 0.3, child: Chart(_recentTransactions)),
+      Container(
+          height: _grantedHeight * 0.7,
+          width: double.infinity,
+          child: TransactionList(_tData, _deleteTransaction)),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final _mediaQuery = MediaQuery.of(context);
@@ -137,16 +162,16 @@ setState(() {
 
     final PreferredSizeWidget appBar = Platform.isIOS
         ? CupertinoNavigationBar(
-            middle: Text("My Expense"),
+            middle: const Text("My Expense"),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 GestureDetector(
-                  child: Icon(CupertinoIcons.add),
+                  child: const Icon(CupertinoIcons.add),
                   onTap: () => _showAddTransaction(context),
                 ),
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.add,
                     color: Colors.white,
                   ),
@@ -156,10 +181,10 @@ setState(() {
             ),
           )
         : AppBar(
-            title: Text("My Expense"),
+            title: const Text("My Expense"),
             actions: <Widget>[
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.add,
                   color: Colors.white,
                 ),
@@ -168,57 +193,14 @@ setState(() {
             ],
           );
 
-    final _pageBody = SafeArea(///SafeArea包裹，处理iOS中的遮挡问题
+    final _pageBody = SafeArea(
+      ///SafeArea包裹，处理iOS中的遮挡问题
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            if (_isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                Text('展示表格',style: Theme.of(context).textTheme.title,),
-                Switch.adaptive(
-                activeColor: Theme.of(context).accentColor,
-                value: _landShowCharts,
-                onChanged: (value) {
-                  setState(() {
-                    _landShowCharts = value;
-                  });
-                },
-              ),
-            ],),
-              
-            if (_isLandscape)
-              _landShowCharts
-                  ? Container(
-                      height: (_mediaQuery.size.height -
-                              appBar.preferredSize.height -
-                              _mediaQuery.padding.top) *
-                          0.7,
-                      child: Chart(_recentTransactions))
-                  : Container(
-                      height: (_mediaQuery.size.height -
-                              appBar.preferredSize.height -
-                              _mediaQuery.padding.top) *
-                          0.7,
-                      width: double.infinity,
-                      child: TransactionList(_tData, _deleteTransaction)),
-            if (!_isLandscape)
-              Container(
-                  height: (_mediaQuery.size.height -
-                          appBar.preferredSize.height -
-                          _mediaQuery.padding.top) *
-                      0.3,
-                  child: Chart(_recentTransactions)),
-            if (!_isLandscape)
-              Container(
-                  height: (_mediaQuery.size.height -
-                          appBar.preferredSize.height -
-                          _mediaQuery.padding.top) *
-                      0.7,
-                  width: double.infinity,
-                  child: TransactionList(_tData, _deleteTransaction)),
+            if (_isLandscape) ...genLandscapePageBody(_mediaQuery, appBar),
+            if (!_isLandscape) ...genPortraitPageBody(_mediaQuery, appBar),
           ],
         ),
       ),
@@ -234,10 +216,10 @@ setState(() {
             floatingActionButton: Platform.isIOS
                 ? Container()
                 : FloatingActionButton(
-                    child: Icon(Icons.add),
+                    child: const Icon(Icons.add),
                     onPressed: () => _showAddTransaction(context),
                   ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           );
   }
 }

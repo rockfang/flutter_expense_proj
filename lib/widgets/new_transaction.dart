@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 import './adaptive_flat_button.dart';
 
 class NewTransaction extends StatefulWidget {
-  Function _addHandler;
-  NewTransaction(this._addHandler);
+  final Function _addHandler;
+  const NewTransaction(this._addHandler);
 
   @override
   _NewTransactionState createState() => _NewTransactionState();

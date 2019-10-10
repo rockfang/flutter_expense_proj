@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/transaction.dart';
-import 'package:intl/intl.dart';
+import './transaction_item.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> _tData;
   final Function _deleteTransaction;
-  TransactionList(this._tData, this._deleteTransaction);
+  const TransactionList(this._tData, this._deleteTransaction);
 
   List<Transaction> get _orderedTData {
     _tData.sort((a, b) => a.datetime.compareTo(b.datetime));
@@ -37,40 +37,7 @@ class TransactionList extends StatelessWidget {
         : ListView.builder(
             itemCount: _orderedTData.length,
             itemBuilder: (BuildContext context, int index) {
-              return Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FittedBox(
-                          child: Text("￥${_orderedTData[index].amount}")),
-                    ),
-                  ),
-                  title: Text(_orderedTData[index].title),
-                  subtitle: Text(
-                      DateFormat.yMd().format(_orderedTData[index].datetime)),
-                  trailing: MediaQuery.of(context).size.width > 420
-                      ? FlatButton.icon(
-                          icon: Icon(
-                            Icons.delete,
-                            color: Theme.of(context).errorColor,
-                          ),
-                          label: const Text('删除'),
-                          onPressed: () =>
-                              _deleteTransaction(_orderedTData[index].id),
-                          textColor: Theme.of(context).errorColor,
-                        )
-                      : IconButton(
-                          color: Theme.of(context).errorColor,
-                          icon: const Icon(Icons.delete),
-                          onPressed: () =>
-                              _deleteTransaction(_orderedTData[index].id),
-                        ),
-                ),
-              );
+              return TransactionItem(_orderedTData[index], _deleteTransaction);
             },
           );
   }

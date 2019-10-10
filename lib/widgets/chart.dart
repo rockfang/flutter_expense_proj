@@ -4,7 +4,7 @@ import '../models/transaction.dart';
 import 'package:intl/intl.dart';
 
 class Chart extends StatelessWidget {
-  List<Transaction> _srcTransactionData;
+  final List<Transaction> _srcTransactionData;
   Chart(this._srcTransactionData);
 
   List<Map<String, Object>> get _recentTransactionData {
@@ -38,7 +38,7 @@ class Chart extends StatelessWidget {
       margin: EdgeInsets.all(20),
       elevation: 6,
       // child: Text(_recentTransactionData.toString()),
-      child: Padding(
+      child:  Padding(
         padding: EdgeInsets.all(10),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
