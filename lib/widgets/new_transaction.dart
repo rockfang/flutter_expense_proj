@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import './adaptive_flat_button.dart';
 
 class NewTransaction extends StatefulWidget {
   Function _addHandler;
@@ -78,15 +81,7 @@ class _NewTransactionState extends State<NewTransaction> {
                           ? "还没有选择日期哦"
                           : "消费日期:${DateFormat.yMd().format(_pickedDate)}"),
                     ),
-                    FlatButton(
-                      child: Text(
-                        "选择日期",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor),
-                      ),
-                      onPressed: _showDatePicker,
-                    ),
+                    AdaptiveFlatButton("选择日期", _showDatePicker),
                   ],
                 ),
               ),

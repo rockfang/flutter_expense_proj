@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ChartBar extends StatelessWidget {
-  String label;
-  double spendingAmount;
-  double pctOfTotal;
-  ChartBar(this.label, this.spendingAmount, this.pctOfTotal);
+final String label;
+final double spendingAmount;
+final double pctOfTotal;
+const ChartBar(this.label, this.spendingAmount, this.pctOfTotal);
   @override
   Widget build(BuildContext context) {
   return LayoutBuilder(builder: (ctx, constraints) {

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './widgets/transaction_list.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-      ],
+      ],///
       supportedLocales: [
         const Locale('zh', 'CH'),
         const Locale('en', 'US'),
@@ -66,31 +67,31 @@ class _MyHomePageState extends State<MyHomePage> {
         title: "breakfirst",
         amount: 15,
         datetime: DateTime.now().subtract(Duration(days: 7))),
-    Transaction(
-        id: "2",
-        title: "lunch",
-        amount: 25,
-        datetime: DateTime.now().subtract(Duration(days: 6))),
-    Transaction(
-        id: "3",
-        title: "dinner",
-        amount: 35,
-        datetime: DateTime.now().subtract(Duration(days: 5))),
-    Transaction(
-        id: "4",
-        title: "dinner",
-        amount: 35,
-        datetime: DateTime.now().subtract(Duration(days: 4))),
-    Transaction(
-        id: "5",
-        title: "dinner",
-        amount: 35,
-        datetime: DateTime.now().subtract(Duration(days: 2))),
-    Transaction(
-        id: "6",
-        title: "dinner",
-        amount: 35,
-        datetime: DateTime.now().subtract(Duration(days: 3))),
+    // Transaction(
+    //     id: "2",
+    //     title: "lunch",
+    //     amount: 25,
+    //     datetime: DateTime.now().subtract(Duration(days: 6))),
+    // Transaction(
+    //     id: "3",
+    //     title: "dinner",
+    //     amount: 35,
+    //     datetime: DateTime.now().subtract(Duration(days: 5))),
+    // Transaction(
+    //     id: "4",
+    //     title: "dinner",
+    //     amount: 35,
+    //     datetime: DateTime.now().subtract(Duration(days: 4))),
+    // Transaction(
+    //     id: "5",
+    //     title: "dinner",
+    //     amount: 35,
+    //     datetime: DateTime.now().subtract(Duration(days: 2))),
+    // Transaction(
+    //     id: "6",
+    //     title: "dinner",
+    //     amount: 35,
+    //     datetime: DateTime.now().subtract(Duration(days: 3))),
   ];
   void _addTransaction(String title, double amount, DateTime datetime) {
     Transaction _newOne = Transaction(
@@ -98,9 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: title,
         id: DateTime.now().toString(),
         datetime: datetime);
-    setState(() {
-      _tData.add(_newOne);
-    });
+setState(() {
+  _tData.add(_newOne);
+});
   }
 
   void _deleteTransaction(String id) {
@@ -134,34 +135,60 @@ class _MyHomePageState extends State<MyHomePage> {
     final _mediaQuery = MediaQuery.of(context);
     final _isLandscape = _mediaQuery.orientation == Orientation.landscape;
 
-    final AppBar appBar = AppBar(
-      title: Text("My Expense"),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-          onPressed: () => _showAddTransaction(context),
-        )
-      ],
-    );
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
+    final PreferredSizeWidget appBar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text("My Expense"),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                GestureDetector(
+                  child: Icon(CupertinoIcons.add),
+                  onTap: () => _showAddTransaction(context),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => _showAddTransaction(context),
+                )
+              ],
+            ),
+          )
+        : AppBar(
+            title: Text("My Expense"),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+                onPressed: () => _showAddTransaction(context),
+              )
+            ],
+          );
+
+    final _pageBody = SafeArea(///SafeArea包裹，处理iOS中的遮挡问题
+      child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             if (_isLandscape)
-Switch.adaptive(
-  activeColor: Theme.of(context).accentColor,
-  value: _landShowCharts,
-  onChanged: (value) {
-    setState(() {
-      _landShowCharts = value;
-    });
-  },
-),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                Text('展示表格',style: Theme.of(context).textTheme.title,),
+                Switch.adaptive(
+                activeColor: Theme.of(context).accentColor,
+                value: _landShowCharts,
+                onChanged: (value) {
+                  setState(() {
+                    _landShowCharts = value;
+                  });
+                },
+              ),
+            ],),
+              
             if (_isLandscape)
               _landShowCharts
                   ? Container(
@@ -195,11 +222,22 @@ Switch.adaptive(
           ],
         ),
       ),
-      floatingActionButton: Platform.isIOS ? Container() : FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _showAddTransaction(context),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: _pageBody,
+            navigationBar: appBar,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: _pageBody,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    child: Icon(Icons.add),
+                    onPressed: () => _showAddTransaction(context),
+                  ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          );
   }
 }

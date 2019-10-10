@@ -20,7 +20,7 @@ class TransactionList extends StatelessWidget {
               return Column(
                 children: <Widget>[
                   Text("you have no transaction now ~"),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Container(
@@ -54,14 +54,18 @@ class TransactionList extends StatelessWidget {
                       DateFormat.yMd().format(_orderedTData[index].datetime)),
                   trailing: MediaQuery.of(context).size.width > 420
                       ? FlatButton.icon(
-                          icon: Icon(Icons.delete,color: Theme.of(context).errorColor,),
-                          label: Text('删除'),
-                          onPressed: () => _deleteTransaction(_orderedTData[index].id),
+                          icon: Icon(
+                            Icons.delete,
+                            color: Theme.of(context).errorColor,
+                          ),
+                          label: const Text('删除'),
+                          onPressed: () =>
+                              _deleteTransaction(_orderedTData[index].id),
                           textColor: Theme.of(context).errorColor,
                         )
                       : IconButton(
                           color: Theme.of(context).errorColor,
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () =>
                               _deleteTransaction(_orderedTData[index].id),
                         ),
