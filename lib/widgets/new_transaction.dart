@@ -7,10 +7,15 @@ import './adaptive_flat_button.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function _addHandler;
-  const NewTransaction(this._addHandler);
+  NewTransaction(this._addHandler) {
+    print('Constructor NewTransaction ');
+  }
 
   @override
-  _NewTransactionState createState() => _NewTransactionState();
+  _NewTransactionState createState() {
+    print('createState NewTransaction ');
+    return _NewTransactionState();
+  }
 }
 
 class _NewTransactionState extends State<NewTransaction> {
@@ -44,6 +49,27 @@ class _NewTransactionState extends State<NewTransaction> {
     }
     widget._addHandler(_title, _amount, _pickedDate);
     Navigator.of(context).pop();
+  }
+
+  _NewTransactionState() {
+    print('Constructor _NewTransactionState ');
+  }
+  @override
+  void initState() {
+    super.initState();
+    print('initState _NewTransactionState');
+  }
+
+  @override
+  void didUpdateWidget(NewTransaction oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print('didUpdateWidget _NewTransactionState');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print('dispose _NewTransactionState');
   }
 
   @override

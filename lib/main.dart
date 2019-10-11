@@ -62,13 +62,13 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   List<Transaction> _tData = [
-    Transaction(
-        id: "1",
-        title: "breakfirst",
-        amount: 15,
-        datetime: DateTime.now().subtract(Duration(days: 7))),
+    // Transaction(
+    //     id: "1",
+    //     title: "breakfirst",
+    //     amount: 15,
+    //     datetime: DateTime.now().subtract(Duration(days: 7))),
   ];
   void _addTransaction(String title, double amount, DateTime datetime) {
     Transaction _newOne = Transaction(
@@ -107,6 +107,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool _landShowCharts = false;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   List<Widget> genLandscapePageBody(MediaQueryData mediaQuery, AppBar appBar) {
     final double _chartHeight = (mediaQuery.size.height -
@@ -219,7 +236,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: const Icon(Icons.add),
                     onPressed: () => _showAddTransaction(context),
                   ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
           );
   }
 }

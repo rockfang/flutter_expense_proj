@@ -14,7 +14,7 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _orderedTData.length == 0
+    return _tData.length == 0
         ? LayoutBuilder(
             builder: (ctx, contraints) {
               return Column(
@@ -34,11 +34,22 @@ class TransactionList extends StatelessWidget {
               );
             },
           )
-        : ListView.builder(
-            itemCount: _orderedTData.length,
-            itemBuilder: (BuildContext context, int index) {
-              return TransactionItem(_orderedTData[index], _deleteTransaction);
-            },
+        : ListView(
+            children: _tData.map((t) => 
+              TransactionItem(
+                  key: ValueKey(t.id),
+                  transaction: t,
+                  deleteTransaction: _deleteTransaction)
+            ).toList(),
           );
+    // : ListView.builder(
+    //     itemCount: _orderedTData.length,
+    //     itemBuilder: (BuildContext context, int index) {
+    //       return TransactionItem(
+    //           key: UniqueKey(),
+    //           transaction: _orderedTData[index],
+    //           deleteTransaction: _deleteTransaction);
+    //     },
+    //   );
   }
 }
